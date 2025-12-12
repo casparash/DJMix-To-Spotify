@@ -58,16 +58,6 @@ async def analyze_mix(video_file):
 
     return detected_songs
 
-songs = []
-found_uris = []
-
-load_dotenv()
-
-CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("SPOTIPY_REDIRECT_URI")
-SHAZAM_KEY = os.getenv("SHAZAM_API_KEY")
-
 def create_playlist(playlist_name, found_uris):
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
         client_id=CLIENT_ID,
@@ -113,7 +103,6 @@ def clean_song_title(song_name):
         
     return song_name.strip()
 
-
 def get_song_uri(song_name, artist_name=None):
     sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
         client_id = CLIENT_ID,
@@ -158,7 +147,17 @@ def get_song_uri(song_name, artist_name=None):
     except Exception as e:
         print(f"Error searching for {song_name}: {e}")
         return None
-    
+
+load_dotenv()
+
+songs = []
+found_uris = []
+
+CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("SPOTIPY_REDIRECT_URI")
+SHAZAM_KEY = os.getenv("SHAZAM_API_KEY")
+
 PLAYLIST_NAME = "Test"
 VIDEO_FILE = "YTDown.com_YouTube_Classic-House-Grooves-&-Good-Vibes-Chill_Media_5pu5ZGFWZ98_006_144p.mp4"
 
@@ -201,26 +200,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-'''
-with open("song_list2.txt") as song_list:
-    for song in song_list:
-        songs.append(song)
-
-
-for line in songs:
-    if " - " in line:
-        parts = line.split(" - ")
-        song = parts[1]
-        artist = parts[0]
-        uri = get_song_uri(song, artist)
-    else:
-        uri = get_song_uri(line)
-
-    if uri:
-        found_uris.append(uri)
-
-print(f"\nCollected {len(found_uris)} URIs ready for playlist creation.")
-
-create_playlist("Test", found_uris)
-'''

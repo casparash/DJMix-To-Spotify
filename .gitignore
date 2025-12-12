@@ -13,6 +13,7 @@ env/
 # This prevents your API keys from being uploaded
 .env
 .DS_Store
+.cache
 
 # --- IDE Settings ---
 # If you use VS Code or PyCharm, don't share your local settings
