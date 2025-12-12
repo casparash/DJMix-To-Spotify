@@ -1,0 +1,20 @@
+# --- Python Internals ---
+# You don't want to commit compiled python files
+__pycache__/
+*.py[cod]
+
+# --- Virtual Environments ---
+# If you created a venv, you don't want to upload all the library code
+venv/
+env/
+.venv/
+
+# --- Environment Variables & Secrets (CRITICAL) ---
+# This prevents your API keys from being uploaded
+.env
+.DS_Store
+
+# --- IDE Settings ---
+# If you use VS Code or PyCharm, don't share your local settings
+.vscode/
+.idea/

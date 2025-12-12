@@ -1,13 +1,20 @@
+import os
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+from dotenv import load_dotenv
 
 songs = []
 found_uris = []
 
+load_dotenv()
+
+CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
+
 def get_song_uri(song_name, artist_name=None):
     sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-        client_id = "ef56c951ec254ac0a7a71e3c21ba33f5",
-        client_secret = "98818a78f96044b09b48e00392f28cbc"
+        client_id = CLIENT_ID,
+        client_secret = CLIENT_SECRET
     ))
 
     if artist_name:
@@ -31,7 +38,7 @@ def get_song_uri(song_name, artist_name=None):
         return None
 
 
-with open("song_list.txt") as song_list:
+with open("song_list2.txt") as song_list:
     for song in song_list:
         songs.append(song)
 
@@ -39,8 +46,8 @@ with open("song_list.txt") as song_list:
 for line in songs:
     if " - " in line:
         parts = line.split(" - ")
-        song = parts[0]
-        artist = parts[1]
+        song = parts[1]
+        artist = parts[0]
         uri = get_song_uri(song, artist)
     else:
         uri = get_song_uri(line)
