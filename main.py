@@ -1,4 +1,5 @@
 import os
+import re
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
@@ -10,6 +11,21 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
+
+def clean_song_title(song_name):
+    song_name = re.sub(r"\(.*?\)", "", song_name)
+    song_name = re.sub(r"\[.*?\]", "", song_name)
+
+    keywords = [
+        "Extended Mix", "Original Mix", "Club Mix", "Radio Edit", 
+        "feat\.", "ft\.", "Remix"
+    ]
+
+    for word in keywords:
+        song_name = re.sub(f"(?i){word}", "", song_name)
+        
+    return song_name.strip()
+
 
 def get_song_uri(song_name, artist_name=None):
     sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
@@ -25,6 +41,25 @@ def get_song_uri(song_name, artist_name=None):
     try:
         result = sp.search(q=query, type='track', limit=1)
 
+        tracks = result['tracks']['items']
+        if tracks:
+            uri = tracks[0]['uri']
+            print(f"Found: {tracks[0]['name']} by {tracks[0]['artists'][0]['name']}")
+            return uri
+    except:
+        pass
+
+    cleaned_song = clean_song_title(song_name)
+
+    if cleaned_song == song_name:
+        print("   -> No match found.")
+        return None
+    
+    query_clean = f"track:{cleaned_song} artist:{artist_name}"
+    print(f"Attempt 2:  {query_clean}")
+
+    try:
+        result = sp.search(q=query_clean, type='track', limit=1)
         tracks = result['tracks']['items']
         if tracks:
             uri = tracks[0]['uri']
